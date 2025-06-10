@@ -1,0 +1,21 @@
+INSERT INTO ncaab.players(
+	name, position_id, team_id, year, home_city, number, redshirt)
+	VALUES  ('Jakai Newton', 2, 2, 1, 'Covington, GA', 0, true),
+			('Myles Rice', 2, 2, 2, 'Columbia, SC', 1, true),
+			('Gabe Cupps', 2, 2, 2, 'Dayton, OH', 2, false),
+			('Anthony Leal', 2, 2, 5, 'Bloomington, IN', 3, false),
+			('Malik Reneau', 3, 2, 3, 'Miami, FL', 5, false),
+			('Bryson Tucker', 3, 2, 1, 'Bowie, MD', 8, false),
+			('Kanaan Carlyle', 2, 2, 2, 'Atlanta, GA', 9, false),
+			('Luke Goode', 3, 2, 4, 'Fort Wayne, IN', 10, false),
+			('Oumar Ballo', 4, 2, 5, 'Koulikoro, Mali', 11, true),
+			('Langdon Hatton', 4, 2, 4, 'Georgetown, IN', 12, false),
+			('Shaan Burke', 2, 2, 4, 'San Diego, CA', 13, false),
+			('Jordan Rayford', 2, 2, 2, 'Washington DC', 14, true),
+			('James Goodis', 2, 2, 2, 'Winter Park, FL', 15, false),
+			('Jaden Bobbett', 2, 2, 4, 'Rye, NH', 20, false),
+			('Mackenzie Mgbako', 3, 2, 2, 'Gladstone, NJ', 21, false),
+			('Jackson Creel', 2, 2, 4, 'Mount Vernon, IL', 22, false),
+			('Ian Stephens', 2, 2, 2, 'New Palestine, IN', 30, false),
+			('Trey Galloway', 2, 2, 5, 'Culver, IN', 32, false),
+			('Dallas James', 4, 2, 5, 'Artesia, CA', 42, false)
