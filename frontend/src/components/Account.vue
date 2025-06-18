@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="login-content" v-if="!user && false">
+        <div class="login-content" v-if="!user">
             <div class="inputs">
                 <div class="login-input">
                     <label>Email</label>

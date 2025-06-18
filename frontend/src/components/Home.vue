@@ -1,7 +1,8 @@
 <template>
     <div class="main-content">
-        <Navigation />
+        <Navigation :activeTab="activeTab" @tab-change="activeTab = $event"/>
         <Account :user="user"/>
+        <Game v-if="activeTab === 'game'"/>
     </div>
 </template>
 
@@ -16,15 +17,18 @@
 <script>
 import Navigation from './Navigation.vue';
 import Account from './Account.vue';
+import Game from './Game.vue';
 export default {
     name: 'Home',
     components: {
         Navigation,
-        Account
+        Account,
+        Game
     },
     data() {
         return {
-            user: null
+            user: null,
+            activeTab: 'game'
         }
     }
 }

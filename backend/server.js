@@ -3,7 +3,8 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const usersRoutes = require('./routes/users')
+const usersRoutes = require('./routes/users');
+const gamesRoutes = require('./routes/games');
 
 dotenv.config();
 
@@ -11,7 +12,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use('/', usersRoutes)
+app.use('/', usersRoutes);
+app.use('/', gamesRoutes)
 
 const PORT = 4000;
 

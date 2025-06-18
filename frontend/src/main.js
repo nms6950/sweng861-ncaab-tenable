@@ -20,7 +20,12 @@ import {
     faRightFromBracket,
     faListUl,
     faPeopleGroup,
-    faPerson
+    faPerson,
+    faAnglesLeft,
+    faAnglesRight,
+    faHeart,
+    faPlay,
+    faPause
 } from '@fortawesome/free-solid-svg-icons';
 
 import { 
@@ -35,7 +40,12 @@ library.add(
     faRightFromBracket,
     faListUl,
     faPeopleGroup,
-    faPerson
+    faPerson,
+    faAnglesLeft,
+    faAnglesRight,
+    faHeart,
+    faPlay,
+    faPause
 );
 
 const app = createApp(App)

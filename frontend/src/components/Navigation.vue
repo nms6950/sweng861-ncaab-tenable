@@ -3,15 +3,15 @@
         <div class="logo">
             <img src="./../assets/btn-logo.png">
         </div>
-        <a href="#" class="active">
+        <a href="#" :class="activeTab === 'game' ? 'active' : ''" @click="$emit('tab-change', 'game')">
             <fa icon="list-ul" />
             <b class="ms-4">Tenable</b>
         </a>
-        <a href="#" class="">
+        <a href="#" :class="activeTab === 'teams' ? 'active' : ''" @click="$emit('tab-change', 'teams')">
             <fa icon="people-group" />
             <b class="ms-4">Team Profiles</b>
         </a>
-        <a href="#">
+        <a href="#" :class="activeTab === 'players' ? 'active' : ''" @click="$emit('tab-change', 'players')">
             <fa icon="user" />
             <b class="ms-4">Player Profiles</b>
         </a>
@@ -36,7 +36,6 @@
     background-color: var(--btn-blue);
 }
 
-
 .nav-bar a {
   padding: 15px 20px;
   width: 100%;
@@ -57,6 +56,7 @@
 <script>
 export default {
     name: 'Navigation',
+    props: ['activeTab'],
     data() {
         return {
             
