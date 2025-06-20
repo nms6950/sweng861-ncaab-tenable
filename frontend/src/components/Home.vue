@@ -3,6 +3,8 @@
         <Navigation :activeTab="activeTab" @tab-change="activeTab = $event"/>
         <Account :user="user"/>
         <Game v-if="activeTab === 'game'"/>
+        <Teams v-if="activeTab === 'teams'"/>
+        <Players v-if="activeTab === 'players'" />
     </div>
 </template>
 
@@ -18,12 +20,16 @@
 import Navigation from './Navigation.vue';
 import Account from './Account.vue';
 import Game from './Game.vue';
+import Teams from './Teams.vue';
+import Players from './Players.vue'
 export default {
     name: 'Home',
     components: {
         Navigation,
         Account,
-        Game
+        Game,
+        Teams,
+        Players
     },
     data() {
         return {

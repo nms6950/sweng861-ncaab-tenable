@@ -25,7 +25,8 @@ import {
     faAnglesRight,
     faHeart,
     faPlay,
-    faPause
+    faPause,
+    faCircleUser
 } from '@fortawesome/free-solid-svg-icons';
 
 import { 
@@ -45,7 +46,8 @@ library.add(
     faAnglesRight,
     faHeart,
     faPlay,
-    faPause
+    faPause,
+    faCircleUser
 );
 
 const app = createApp(App)
