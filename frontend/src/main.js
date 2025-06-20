@@ -26,7 +26,8 @@ import {
     faHeart,
     faPlay,
     faPause,
-    faCircleUser
+    faCircleUser,
+    faChevronDown
 } from '@fortawesome/free-solid-svg-icons';
 
 import { 
@@ -47,7 +48,8 @@ library.add(
     faHeart,
     faPlay,
     faPause,
-    faCircleUser
+    faCircleUser,
+    faChevronDown
 );
 
 const app = createApp(App)

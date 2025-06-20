@@ -12,8 +12,8 @@
                 </div>
             </div>
             <div class="login-btn">
-                <button class="btn btn-primary">LOGIN</button>
-                <button class="btn btn-warning">REGISTER</button>
+                <button class="btn btn-primary" @click="login()">LOGIN</button>
+                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#createAccountModal">REGISTER</button>
             </div>
         </div>
         <div class="user-content" v-else>
@@ -93,6 +93,8 @@
 </style>
 
 <script>
+import axios from 'axios';
+import { toast } from 'vue3-toastify'
 export default {
     name: 'Account',
     components: {
@@ -106,6 +108,52 @@ export default {
             email: '',
             password: ''
         }
+    },
+    methods: {
+        async login() {  
+            // Validate data
+            let errMsg = 'The following fields are missing: ';
+            let missingFields = []
+            if (!this.email) {
+                missingFields.push('Email')
+            }
+            if (!this.password) {
+                missingFields.push('Password')
+            }
+            if (missingFields.length > 0) {
+                errMsg += missingFields.join(', ')
+                toast.error(errMsg, {
+                    position: "top-right",
+                    timeout: 5000,
+                })
+            } else {
+                // Submit data
+                // Testing - localhost url
+                //let url = `http://localhost:4000/login`
+                const baseURL = import.meta.env.DEV ? 'http://localhost:4000' : '';
+                console.log(baseURL)
+                try {
+                    const response = await axios.post(`${baseURL}/login`, {
+                        email: this.email,
+                        password: this.password
+                    })
+
+                    if (response.data.error) {
+                        toast.error(response.data.error, {
+                            position: "top-right",
+                            timeout: 10000,
+                        })
+                    } else {
+                        this.$emit('login', response.data)
+                    }
+                } catch (error) {
+                    toast.error('Error logging in', {
+                        position: "top-right",
+                        timeout: 10000,
+                    })
+                }
+            }
+        },
     }
 }
 </script>

@@ -54,12 +54,12 @@ router.post('/login', async (req, res) => {
 
         // Update login date
         const updateQuery = 'UPDATE ncaab.users SET updated_at = NOW() WHERE email = $1 RETURNING *';
-        await pool.query(updateQuery, [email]);
+        const userResponse = await pool.query(updateQuery, [email]);
 
         // Generate JWT token
         const token = jwt.sign({
-            userId: existingUser.rows[0].id,
-            email: existingUser.rows[0].email
+            userId: userResponse.rows[0].id,
+            email: userResponse.rows[0].email
         }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         // Set cookie
@@ -70,7 +70,7 @@ router.post('/login', async (req, res) => {
             maxAge: 60 * 60 * 1000 // 1 hour
         });
 
-        return res.json(existingUser.rows[0]);
+        return res.json(userResponse.rows[0]);
     } catch (error) {
         console.error('Error logging in:', error);
         res.status(500).json({ error: 'Internal server error' });

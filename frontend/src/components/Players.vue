@@ -5,25 +5,27 @@
                 <label>Search</label>
                 <input type="text" v-model="search" placeholder="Search for a player...">
             </div>
-            <div class="player-dropdown">
+            <div class="player-dropdown position-relative">
                 <label>Team</label>
-                <select v-model="selectedTeam">
-                    <option disabled value="">Select a team</option>
-                    <option v-for="team in teams" :key="team">{{ team }}</option>
+                <select v-model="selected" class="form-control">
+                    <option value="">All Teams</option>
+                    <option v-for="team in teams" :key="team">{{ team.name }}</option>
                 </select>
+                <fa icon="chevron-down" class="dropdown-icon"/>
             </div>
         </div>
         <div class="players-box">
-            <div class="player-card" >
+            <div class="player-card" v-for="(player, index) in filteredPlayers" :key="index">
                 <div class="team-logo">
-                    <img src="./../assets/illinois_logo.png" alt="Card Image" />
+                    <img :src="getLogoPath(player.logo_src)" alt="Card Image" />
                 </div>
                 <div class="card-text">
-                    {{ player.name }} - {{ player.position }} - {{ player.team }} <br>
-                    {{ player.hometown }}
+                    {{ player.name }} | {{ player.team_abbrev}} <br />
+                    {{ player.position_abbrev }} | {{ getPlayerYear(player) }} <br>
+                    {{ player.home_city }} <br />
                 </div>
                 <div class="player-number">
-                    {{ player.number ? player.number :  '00' }}
+                    {{ player.number }}
                 </div>
             </div>
         </div>
@@ -52,6 +54,13 @@
     height: 86%;
     width: 95%;
     border: 2px solid #063c6d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5%;
+    overflow-y: auto;
 }
 
 .players-header {
@@ -104,7 +113,7 @@ select {
 
 .player-card {
   width: 40%; /* or 100% or any other value */
-  height: 10%;
+  height: 14%;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -128,6 +137,11 @@ select {
   justify-content: center;
   align-items: center;
   font-size: 1rem !important;
+}
+
+.player-card .card-text b {
+    font-size: 1rem;
+    font-weight: 600;
 }
 
 .player-card .player-number {
@@ -165,6 +179,14 @@ select {
   max-height: 100%;
   object-fit: contain; /* or cover depending on your goal */
 }
+.player-dropdown .dropdown-icon {
+  position: absolute;
+  right: 12%;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: black; /* optional: match Bootstrap’s default gray */
+}
 </style>
 
 <script>
@@ -174,39 +196,85 @@ export default {
     components: {
         
     },
-    prop: ['activeTab', 'selectedTeam'],
+    props: ['activeTab', 'selectedTeam'],
     data() {
         return {
             search: null,
-            teams: ['Lakers', 'Bulls', 'Celtics', 'Warriors'],
+            teams: [],
             player: {
                 name: 'Kylan Boswell',
                 number: 4,
                 team: 'ILL',
                 hometown: 'Champaign-Urbana, IL',
-                position: 'G'
-            }
+                position: 'G',
+                redshirt: true,
+                year: 3,
+                year_abbrev: 'JR'
+            },
+            selected: '',
+            players: []
         }
     },
     methods: {
+        getLogoPath(filename) {
+            return new URL(`../assets/${filename}`, import.meta.url).href;
+        },
         async getAllPlayers() {
             let url = 'http://localhost:4000/getPlayers'
 
             axios.get(url)
             .then(res => {
-                this.teams = res.data
-                console.log(this.teams)
+                this.players = res.data
             })
             .catch(err => {
                 console.log(err)
             })
+        },
+        async getTeams() {
+            let url = 'http://localhost:4000/getTeams'
+
+            axios.get(url)
+            .then(res => {
+                this.teams = res.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+        getPlayerYear(player) {
+            return player.redshirt ? `R-${player.abbrev}` : `${player.abbrev}`
         }
     },
     mounted() {
-        
+        this.getAllPlayers();
+        this.getTeams();
+        if (this.selectedTeam) {
+            this.selected = this.selectedTeam.name;
+        }
     },
     watch: {
-        
+        selectedTeam: function (newValue) {
+            console.log(newValue)
+            this.selected = newValue.name;
+        },
+        selected: function (newValue) {
+            console.log(newValue)
+        }
+    },
+    computed: {
+        filteredPlayers() {
+            return this.players.filter(player => {
+                const matchesSearch = this.search
+                    ? player.name.toLowerCase().includes(this.search.toLowerCase())
+                    : true;
+
+                const matchesTeam = this.selected
+                    ? player.team_name === this.selected
+                    : true;
+
+                return matchesSearch && matchesTeam;
+            });
+        }
     }
 }
 </script>

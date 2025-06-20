@@ -30,7 +30,7 @@
             </div>
         </div>
         <div class="answers">
-            <div class="answer" v-for="(check, index) in currentGame.checking">
+            <div class="answer" v-for="(check, index) in currentGame.checking" v-if="currentGame.id">
                 <div v-if="currentGame.correct[index]" class="correct">
                     {{ currentGame.answers[index] }}
                 </div>
@@ -41,11 +41,14 @@
                     {{ this.checkingPlayer }}
                 </div>
             </div>
+            <div v-else>
+                <span style="font-size: 1.5rem; font-weight: bold;">No Game Today. Come back tomorrow!</span>
+            </div>
         </div>
-        <div class="prompt">
+        <div class="prompt" v-if="currentGame.id">
             {{ currentGame.prompt }}
         </div>
-        <div class="game-input">
+        <div class="game-input" v-if="currentGame.id">
             <div class="dropdown">
                 <input
                     type="text"
@@ -66,14 +69,14 @@
                 </ul>
             </div>
         </div>
-        <EndGame />
+        <EndGame :num_correct="num_correct" />
     </div>
 </template>
 
 <style>
 .game-box {
     height: 85%;
-    width: 50%;
+    width: 60%;
     top: 10%;
     left: 16%;
     position: absolute;
@@ -296,7 +299,8 @@ export default {
             maxDate: null,
             prevEnabled: false,
             nextEnabled: false,
-            maxDate: null
+            maxDate: null,
+            num_correct: 0
         }
     },
     computed: {
@@ -321,6 +325,7 @@ export default {
     methods: {
         clearGame() {
             this.currentGame = {
+                id: null,
                 prompt: '',
                 answerSet: '',
                 answers: [],
@@ -331,6 +336,7 @@ export default {
             this.date = new Date();
             this.numLives = 3;
             this.lastCheckingIndex = 0;
+            this.num_correct = 0;
             clearInterval(this.answerInterval);
             clearInterval(this.timerInterval);
         },
@@ -342,6 +348,25 @@ export default {
             // Initialize and show the modal
             const modalInstance = new Modal(modalEl)
             modalInstance.show()
+
+        },
+        saveStats() {
+            const game_id = this.currentGame.id;
+            let url = 'http://localhost:4000/saveStats'
+            axios.post(url, {
+                params: {
+                    num_correct: this.num_correct,
+                    num_lives: this.numLives,
+                    game_id: game_id,
+                    user_id: user.id
+                }
+            }).then((res) => {
+                const content = res.data;
+                console.log(content);
+            }).catch((err) => {
+                console.log(err);
+            })
+
         },
         selectOption(player) {
             this.playerInput = player.name;
@@ -374,9 +399,9 @@ export default {
                 this.currentGame.correct[index] = true;
                 clearInterval(this.answerInterval);
                 this.playerInput = ''
+                this.num_correct++;
                 if (index == this.lastCheckingIndex) {
                     this.lastCheckingIndex = this.currentGame.correct.indexOf(false);
-                    console.log(this.lastCheckingIndex)
                 }
                 return;
             } else {
@@ -393,7 +418,6 @@ export default {
             let url = 'http://localhost:4000/getPlayers'
             await axios.get(url).then((res) => {
                 const content = res.data;
-                console.log(content);
                 this.players = content;
             }).catch((err) => {
                 console.log(err);
@@ -427,7 +451,8 @@ export default {
                     answers: content.answers,
                     correct: [false, false, false, false, false, false, false, false, false, false],
                     checking: [false, false, false, false, false, false, false, false, false, false],
-                    timer: 200
+                    timer: 200,
+                    id: content.id
                 };
                 this.startTimer();
             }).catch((err) => {

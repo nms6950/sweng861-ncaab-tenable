@@ -1,12 +1,16 @@
 <template>
     <div class="teams-box" v-if="!teamSelected">
-        <!-- <div class="team-card" v-for="(team, index) in teams" :key="index">
-            <img src="./../assets/indiana_logo.webp" alt="Card Image" class="card-image" />
-            <div class="card-text">
-                This is your caption or description.
+        <div class="team-card" v-for="(team, index) in teams" :key="index" @click="teamSelected = team">
+            <div class="team-logo">
+                <img :src="getLogoPath(team.logo_src)" alt="Card Image" class="card-image" :id="team.team_abbrev"/>
             </div>
-        </div> -->
-        <div class="team-card" v-if="teams[0]" @click="teamSelected = teams[0]">
+            <div class="card-text">
+                {{ team.name }} <br>
+                {{ team.mascot }} <br>
+                {{ team.city }}
+            </div>
+        </div>
+        <!-- <div class="team-card" v-if="teams[0]" @click="teamSelected = teams[0]">
             <img src="./../assets/illinois_logo.png" alt="Card Image" class="card-image" />
             <div class="card-text">
                 {{ teams[0].name }} <br>
@@ -126,7 +130,7 @@
             <div class="card-text">
                 This is your caption or description.
             </div>
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -155,7 +159,7 @@
   height: 50%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -169,11 +173,31 @@
     cursor: pointer;
 }
 
+.team-logo {
+    height: 70%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
 .card-image {
-  height: 70%;
-  /* width: 100%; */
-  object-fit: cover;
-  padding: 10px;
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+}
+
+#WIS, #RUT {
+    max-width: 60%;
+}
+
+#PSU, #MINN {
+    max-width: 140%;
+}
+
+#ORE, #MINN {
+    max-height: 150%;
 }
 
 .card-text {
@@ -214,6 +238,9 @@ export default {
         }
     },
     methods: {
+        getLogoPath(filename) {
+            return new URL(`../assets/${filename}`, import.meta.url).href;
+        },
         async getTeams() {
             let url = 'http://localhost:4000/getTeams'
 
