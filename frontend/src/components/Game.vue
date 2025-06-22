@@ -11,6 +11,7 @@
             <div class="game-details">
                 <div
                     class="timer position-relative"
+                    v-if="gameStarted"
                     @mouseover="hoverTimer = true"
                     @mouseout="hoverTimer = false"
                     @click="togglePause"
@@ -22,6 +23,7 @@
                         <fa :icon="isPaused ? 'play' : 'pause'" class="timer-icon"/>
                     </div>
                 </div>
+                <button class="btn btn-primary" v-else @click="startGame()">START GAME</button>
                 <div class="lives">
                     <fa icon="heart" size="lg" :class="numLives >= 1 ? 'red': ''"/>
                     <fa icon="heart" size="lg" :class="numLives >= 2 ? 'red': ''"/>
@@ -31,13 +33,13 @@
         </div>
         <div class="answers">
             <div class="answer" v-for="(check, index) in currentGame.checking" v-if="currentGame.id">
-                <div v-if="currentGame.correct[index]" class="correct">
+                <div v-if="currentGame.checking[index]" class="checking">
+                    {{ this.checkingPlayer }}
+                </div>
+                <div v-else-if="currentGame.correct[index]" class="correct">
                     {{ currentGame.answers[index] }}
                 </div>
                 <div v-else-if="currentGame.checking[index] && index == this.lastCheckingIndex" class="wrong">
-                    {{ this.checkingPlayer }}
-                </div>
-                <div v-else-if="currentGame.checking[index]" class="checking">
                     {{ this.checkingPlayer }}
                 </div>
             </div>
@@ -57,6 +59,7 @@
                     v-model="playerInput"
                     @focus="show = true"
                     @blur="handleBlur"
+                    :disabled="!gameStarted"
                 />
                 <ul
                     class="dropdown-menu show w-100"
@@ -274,7 +277,7 @@ export default {
     components: {
         EndGame
     },
-    prop: ['activeTab'],
+    props: ['activeTab', 'user'],
     data() {
         return {
             currentGame: {
@@ -300,7 +303,10 @@ export default {
             prevEnabled: false,
             nextEnabled: false,
             maxDate: null,
-            num_correct: 0
+            num_correct: 0,
+            gameStarted: false,
+            timerInterval: null,
+            gameEnded: false
         }
     },
     computed: {
@@ -323,25 +329,31 @@ export default {
         }
     },
     methods: {
+        startGame() {
+            this.gameStarted = true;
+            this.gameEnded = false;
+            this.startTimer();
+        },
         clearGame() {
-            this.currentGame = {
-                id: null,
-                prompt: '',
-                answerSet: '',
-                answers: [],
-                correct: [false, false, false, false, false, false, false, false, false, false],
-                checking: [false, false, false, false, false, false, false, false, false, false],
-                timer: 200
-            }
-            this.date = new Date();
             this.numLives = 3;
             this.lastCheckingIndex = 0;
             this.num_correct = 0;
+            this.gameStarted = false;
+            this.isPaused = false;
+            clearInterval(this.answerInterval);
+            clearInterval(this.timerInterval);
+        },
+        resetStats() {
+            this.numLives = 3;
+            this.lastCheckingIndex = 0;
+            this.num_correct = 0;
+            this.gameStarted = false;
+            this.isPaused = false;
             clearInterval(this.answerInterval);
             clearInterval(this.timerInterval);
         },
         endGame() {
-            clearInterval(this.intervalId);
+            clearInterval(this.timerInterval);
             // Get the modal element by ID
             const modalEl = document.getElementById('endGameModal')
 
@@ -349,20 +361,29 @@ export default {
             const modalInstance = new Modal(modalEl)
             modalInstance.show()
 
+            // Save Game
+            if (this.user && this.user.id) {
+                this.saveStats();
+            }
+
+            this.gameEnded = true;
         },
         saveStats() {
             const game_id = this.currentGame.id;
             let url = 'http://localhost:4000/saveStats'
+            console.log(this.num_correct)
+            console.log(this.user.id)
+            console.log(this.currentGame.id)    
+            console.log(this.numLives)
             axios.post(url, {
-                params: {
-                    num_correct: this.num_correct,
-                    num_lives: this.numLives,
-                    game_id: game_id,
-                    user_id: user.id
-                }
+                num_correct: this.num_correct,
+                num_lives: this.numLives,
+                game_id: this.currentGame.id,
+                user_id: this.user.id
             }).then((res) => {
                 const content = res.data;
                 console.log(content);
+                this.$emit('resetStats')
             }).catch((err) => {
                 console.log(err);
             })
@@ -376,13 +397,20 @@ export default {
         },
         answer() {
             let index = 9;
-            this.check(index);
+            let correct = this.check(index);
+            if (correct) {
+                return;
+            }
             this.answerInterval = setInterval(() => {
                 index--;
                 this.check(index)
             }, 750)
         },
         check(index) {
+            if (index != 9) {
+                // Remove checking style from prev index
+                this.currentGame.checking[index + 1] = false;
+            }
             if (index < 0 || index < this.lastCheckingIndex) {
                 clearInterval(this.answerInterval);
                 this.playerInput = ''
@@ -393,17 +421,20 @@ export default {
                 this.currentGame.checking[index + 1] = false;
                 return;
             }
-            this.currentGame.checking[index + 1] = false;
             if (this.playerInput == this.currentGame.answers[index]) {
+                clearInterval(this.answerInterval);
                 this.currentGame.checking[index] = false;
                 this.currentGame.correct[index] = true;
-                clearInterval(this.answerInterval);
+                // clearInterval(this.answerInterval);
                 this.playerInput = ''
                 this.num_correct++;
                 if (index == this.lastCheckingIndex) {
                     this.lastCheckingIndex = this.currentGame.correct.indexOf(false);
                 }
-                return;
+                if (this.num_correct == 10 && this.gameEnded == false) {
+                    this.endGame();
+                }
+                return true;
             } else {
                 this.currentGame.checking[index] = true
             }
@@ -424,8 +455,8 @@ export default {
             });
         },
         startTimer() {
-            clearInterval(this.intervalId);
-            this.intervalId = setInterval(() => {
+            clearInterval(this.timerInterval);
+            this.timerInterval = setInterval(() => {
                 if (!this.isPaused && this.currentGame.timer > 0) {
                     this.currentGame.timer--;
                 }
@@ -438,6 +469,7 @@ export default {
             this.isPaused = !this.isPaused;
         },
         async getGame() {
+            this.gameStarted = false;
             let url = 'http://localhost:4000/getGame'
             axios.get(url, {
                 params: {
@@ -454,7 +486,7 @@ export default {
                     timer: 200,
                     id: content.id
                 };
-                this.startTimer();
+                //this.startTimer();
             }).catch((err) => {
                 console.log(err);
             })
@@ -481,17 +513,19 @@ export default {
             if (newValue == 'game') {
                 this.getGame();
             } else {
+                this.date = new Date();
                 this.clearGame();
             }
         },
         date: function (newValue) {
+            this.clearGame();
             const firstDate = new Date('2025-06-17').toISOString().split('T')[0];
             let dateString = newValue.toISOString().split('T')[0];
-            console.log(dateString)
-            console.log(firstDate)
-            console.log(dateString <= firstDate)
-            console.log(this.maxDate)
-            console.log(dateString >= this.maxDate)
+            // console.log(dateString)
+            // console.log(firstDate)
+            // console.log(dateString <= firstDate)
+            // console.log(this.maxDate)
+            // console.log(dateString >= this.maxDate)
             if (dateString <= firstDate) {
                 this.prevEnabled = false;
             } else {
@@ -503,6 +537,10 @@ export default {
                 this.nextEnabled = true;
             }
             this.getGame()
+        },
+        user: async function (newValue) {
+            await this.clearGame();
+            this.getGame();
         }
     }
 }

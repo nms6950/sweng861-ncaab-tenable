@@ -11,8 +11,8 @@
           <div class="modal-body">
             <div>
                 <h3>Great Job!</h3>
-                <h5>You scored {{ 3 }} out of 10 on today's quiz!</h5>
-                <h5>Next quiz will be available in {{ '3hr' }}!</h5>
+                <h5>You scored {{ num_correct }} out of 10 on today's quiz!</h5>
+                <h5>Come back tomorrow for the next quiz!</h5>
             </div> 
           </div>
           
@@ -27,6 +27,7 @@
 <script>
 export default {
     name: 'EndGame',
+    props: ['num_correct'],
     data() {
         return {
             

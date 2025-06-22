@@ -11,7 +11,7 @@ router.post('/createAccount', async (req, res) => {
     const { name, email, password } = req.body;
 
     const existingUserQuery = 'SELECT * FROM ncaab.users WHERE email = $1';
-    const insertUserQuery = 'INSERT INTO ncaab.users (email, name, password, created_at, updated_at) VALUES ($1, $2, $3, NOW(), NOW()) RETURNING *'
+    const insertUserQuery = 'INSERT INTO ncaab.users (email, name, password, created_at, updated_at) VALUES ($1, $2, $3, NOW(), NOW()) RETURNING id, email, name'
 
     try {
         // Check if user with email and provider = manual exists
@@ -53,7 +53,7 @@ router.post('/login', async (req, res) => {
         }
 
         // Update login date
-        const updateQuery = 'UPDATE ncaab.users SET updated_at = NOW() WHERE email = $1 RETURNING *';
+        const updateQuery = 'UPDATE ncaab.users SET updated_at = NOW() WHERE email = $1 RETURNING id, email, name';
         const userResponse = await pool.query(updateQuery, [email]);
 
         // Generate JWT token

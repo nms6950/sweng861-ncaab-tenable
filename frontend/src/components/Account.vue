@@ -17,7 +17,11 @@
             </div>
         </div>
         <div class="user-content" v-else>
-            <h4>Welcome {{ user ? user.email : 'Guest'}}</h4>
+            <div class="user-info">
+                <fa icon="circle-user" size="lg" style="color: skyblue;"/>
+                <div>Welcome {{ user ? user.name : 'Guest'}}</div>
+            </div>
+            <button class="btn btn-danger" @click="$emit('logout')">LOGOUT</button>
         </div>
     </div>
 </template>
@@ -34,9 +38,30 @@
     border-radius: 10px;
     display: flex;
     flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 10px;
+    color: #063c6d
+}
+
+.user-info {
+    height: 80%;
+    width: 70%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+}
+
+.user-content div {
+    display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 1.1rem !important;
 }
+
 
 .login-content {
     width: 55%;
@@ -145,6 +170,7 @@ export default {
                         })
                     } else {
                         this.$emit('login', response.data)
+                        console.log(response.data)
                     }
                 } catch (error) {
                     toast.error('Error logging in', {

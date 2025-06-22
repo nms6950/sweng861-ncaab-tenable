@@ -13,10 +13,10 @@ pool.on('error', (err, client) => {
 });
 
 router.post('/saveStats', async (req, res) => {
-    const game_id = req.query.game_id;
-    const user_id = req.query.user_id;
-    const num_correct = req.query.num_correct;
-    const num_lives = req.query.num_lives;
+    const game_id = req.body.game_id;
+    const user_id = req.body.user_id;
+    const num_correct = req.body.num_correct;
+    const num_lives = req.body.num_lives;
 
     // Check if there is already a game saved with that user id
     const query = 'SELECT * FROM ncaab.stats WHERE user_id = $1 AND game_id = $2';
@@ -91,12 +91,13 @@ router.get('/getMaxDate', async (req, res) => {
 })
 
 router.get('/getIndividualGames', async (req, res) => {
+    const user_id = req.query.user_id;
     const query =  `SELECT G.game_date, S.num_correct
                     FROM ncaab.games G
-                    LEFT JOIN ncaab.stats S ON (S.game_id = G.id and S.user_id = 1)`
+                    LEFT JOIN ncaab.stats S ON (S.game_id = G.id and S.user_id = $1)`
 
     try {
-        const result = await pool.query(query);
+        const result = await pool.query(query, [user_id]);
         res.json(result.rows);
     } catch (error) {
         console.error(error);
@@ -104,12 +105,13 @@ router.get('/getIndividualGames', async (req, res) => {
 })
 
 router.get('/getUserStats', async (req, res) => {
-    const query =  `SELECT COUNT(*) as games_played, AVERAGE(num_correct) as avg_score
+    const user_id = req.query.user_id;
+    const query =  `SELECT COUNT(*) as games_played, AVG(num_correct) as avg_score
                     FROM ncaab.stats
-                    WHERE user_id = 1`
+                    WHERE user_id = $1`
 
     try {
-        const result = await pool.query(query);
+        const result = await pool.query(query, [user_id]);
         res.json(result.rows);
     } catch (error) {
         console.error(error);

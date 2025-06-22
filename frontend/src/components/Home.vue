@@ -1,12 +1,12 @@
 <template>
     <div class="main-content">
         <Navigation :activeTab="activeTab" @tab-change="activeTab = $event"/>
-        <Account :user="user" @login="login($event)"/>
-        <Game v-if="activeTab === 'game'"/>
+        <Account :user="user" @login="login($event)" @logout="logout()"/>
+        <Game v-if="activeTab === 'game'" :user="user" :activeTab="activeTab" @resetStats="triggerStats()"/>
         <Teams v-if="activeTab === 'teams'" @openPlayers="initTeamPlayers($event)"/>
         <Players v-if="activeTab === 'players'" :selectedTeam="selectedTeam" :activeTab="activeTab"/>
         <CreateAccount @newUser="newUserCreated($event)"/>
-        <Stats v-if="activeTab == 'game'"/>
+        <Stats v-show="activeTab == 'game' && user" :user="user" :statsTrigger="statsTrigger"/>
     </div>
 </template>
 
@@ -41,17 +41,22 @@ export default {
         return {
             user: null,
             activeTab: 'game',
-            selectedTeam: null
+            selectedTeam: null,
+            statsTrigger: false
         }
     },
     methods: {
         newUserCreated(user) {
-            console.log(user)
             this.user = user
         },
         login(user) {
-            console.log(user)
-            this.user = user
+            this.user = user;
+        },
+        logout() {
+            this.user=null;
+        },
+        triggerStats() {
+            this.statsTrigger = !this.statsTrigger
         },
         initTeamPlayers(team) {
             this.activeTab = 'players'
