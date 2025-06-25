@@ -19,6 +19,7 @@ router.get('/getTeams', async (req, res) => {
         res.json(result.rows);
     } catch (error) {
         console.error(error);
+        return res.json({ error: 'Internal Server Error' });
     }
 })
 

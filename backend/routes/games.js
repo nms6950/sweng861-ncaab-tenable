@@ -61,7 +61,7 @@ router.get('/getPlayers', async (req, res) => {
                     LEFT JOIN ncaab.positions PO ON PO.id = P.position_id`
     try {
         const result = await pool.query(query);
-        res.json(result.rows);
+        return res.json(result.rows);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
