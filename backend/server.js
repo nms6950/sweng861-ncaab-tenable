@@ -1,6 +1,7 @@
 // backend/server.js
-
+const path = require('path');
 const express = require('express');
+const axios = require('axios');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const usersRoutes = require('./routes/users');
