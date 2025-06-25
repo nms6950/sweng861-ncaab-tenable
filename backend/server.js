@@ -13,6 +13,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Serve static frontend from 'public' folder (where your workflow copies frontend build)
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use('/', usersRoutes);
 app.use('/', gamesRoutes);
 app.use('/', teamsRoutes);
