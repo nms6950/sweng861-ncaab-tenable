@@ -313,7 +313,11 @@ export default {
         filteredOptions() {
             if (!this.playerInput) return [];
             const s = this.playerInput.toLowerCase();
-            return this.players.filter(player => player.name.toLowerCase().includes(s));
+            if (this.currentGame.answerSet == 'players') {
+                return this.players.filter(player => player.name.toLowerCase().includes(s));
+            } else {
+                return []
+            }
         },
         formattedDate() {
             if (!this.date) {
@@ -342,15 +346,8 @@ export default {
             this.isPaused = false;
             clearInterval(this.answerInterval);
             clearInterval(this.timerInterval);
-        },
-        resetStats() {
-            this.numLives = 3;
-            this.lastCheckingIndex = 0;
-            this.num_correct = 0;
-            this.gameStarted = false;
-            this.isPaused = false;
-            clearInterval(this.answerInterval);
-            clearInterval(this.timerInterval);
+            this.answerInterval = null;
+            this.timerInterval = null;
         },
         endGame() {
             clearInterval(this.timerInterval);
@@ -371,10 +368,6 @@ export default {
         saveStats() {
             const game_id = this.currentGame.id;
             let url = 'http://localhost:4000/saveStats'
-            console.log(this.num_correct)
-            console.log(this.user.id)
-            console.log(this.currentGame.id)    
-            console.log(this.numLives)
             axios.post(url, {
                 num_correct: this.num_correct,
                 num_lives: this.numLives,
@@ -382,12 +375,10 @@ export default {
                 user_id: this.user.id
             }).then((res) => {
                 const content = res.data;
-                console.log(content);
                 this.$emit('resetStats')
             }).catch((err) => {
                 console.log(err);
             })
-
         },
         selectOption(player) {
             this.playerInput = player.name;
@@ -413,7 +404,7 @@ export default {
             }
             if (index < 0 || index < this.lastCheckingIndex) {
                 clearInterval(this.answerInterval);
-                this.playerInput = ''
+                this.playerInput = '';
                 this.numLives--;
                 if (this.numLives == 0) {
                     this.endGame();
@@ -425,8 +416,7 @@ export default {
                 clearInterval(this.answerInterval);
                 this.currentGame.checking[index] = false;
                 this.currentGame.correct[index] = true;
-                // clearInterval(this.answerInterval);
-                this.playerInput = ''
+                this.playerInput = '';
                 this.num_correct++;
                 if (index == this.lastCheckingIndex) {
                     this.lastCheckingIndex = this.currentGame.correct.indexOf(false);
@@ -486,7 +476,6 @@ export default {
                     timer: 200,
                     id: content.id
                 };
-                //this.startTimer();
             }).catch((err) => {
                 console.log(err);
             })
@@ -495,7 +484,6 @@ export default {
             let url = 'http://localhost:4000/getMaxDate'
             await axios.get(url).then((res) => {
                 const content = res.data;
-                console.log(content)
                 this.maxDate = new Date(content.max).toISOString().split('T')[0];
             }).catch((err) => {
                 console.log(err);
@@ -521,11 +509,6 @@ export default {
             this.clearGame();
             const firstDate = new Date('2025-06-17').toISOString().split('T')[0];
             let dateString = newValue.toISOString().split('T')[0];
-            // console.log(dateString)
-            // console.log(firstDate)
-            // console.log(dateString <= firstDate)
-            // console.log(this.maxDate)
-            // console.log(dateString >= this.maxDate)
             if (dateString <= firstDate) {
                 this.prevEnabled = false;
             } else {

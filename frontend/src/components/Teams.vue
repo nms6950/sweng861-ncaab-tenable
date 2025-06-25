@@ -2,7 +2,7 @@
     <div class="teams-box" v-if="!teamSelected">
         <div class="team-card" v-for="(team, index) in teams" :key="index" @click="teamSelected = team">
             <div class="team-logo">
-                <img :src="getLogoPath(team.logo_src)" alt="Card Image" class="card-image" :id="team.team_abbrev"/>
+                <img :src="`/assets/${team.logo_src}`" alt="Card Image" class="card-image" :id="team.team_abbrev"/>
             </div>
             <div class="card-text">
                 {{ team.name }} <br>
@@ -10,127 +10,6 @@
                 {{ team.city }}
             </div>
         </div>
-        <!-- <div class="team-card" v-if="teams[0]" @click="teamSelected = teams[0]">
-            <img src="./../assets/illinois_logo.png" alt="Card Image" class="card-image" />
-            <div class="card-text">
-                {{ teams[0].name }} <br>
-                {{ teams[0].mascot }} <br>
-                {{ teams[0].city }}
-            </div>
-        </div>
-        <div class="team-card" >
-            <img src="./../assets/indiana_logo.webp" alt="Card Image" class="card-image" />
-            <div class="card-text">
-                This is your caption or description.
-            </div>
-        </div>
-        <div class="team-card" >
-            <img src="./../assets/iowa_logo.png" alt="Card Image" class="card-image" />
-            <div class="card-text">
-                This is your caption or description.
-            </div>
-        </div>
-        <div class="team-card" >
-            <img src="./../assets/maryland_logo.png" alt="Card Image" class="card-image" />
-            <div class="card-text">
-                This is your caption or description.
-            </div>
-        </div>
-        <div class="team-card" >
-            <img src="./../assets/msu_logo.svg" alt="Card Image" class="card-image" />
-            <div class="card-text">
-                This is your caption or description.
-            </div>
-        </div>
-        <div class="team-card" >
-            <img src="./../assets/michigan_logo.png" alt="Card Image" class="card-image" />
-            <div class="card-text">
-                This is your caption or description.
-            </div>
-        </div>
-        <div class="team-card" >
-            <img src="./../assets/minnesota_logo.png" alt="Card Image" class="card-image" id="minnesota"/>
-            <div class="card-text">
-                This is your caption or description.
-            </div>
-        </div>
-
-        <div class="team-card" >
-            <img src="./../assets/northwestern_logo.png" alt="Card Image" class="card-image" />
-            <div class="card-text">
-                This is your caption or description.
-            </div>
-        </div>
-
-        <div class="team-card" >
-            <img src="./../assets/nebraska_logo.png" alt="Card Image" class="card-image" />
-            <div class="card-text">
-                This is your caption or description.
-            </div>
-        </div>
-
-        <div class="team-card" >
-            <img src="./../assets/pennstate_logo.png" alt="Card Image" class="card-image" />
-            <div class="card-text">
-                This is your caption or description.
-            </div>
-        </div>
-
-        <div class="team-card" >
-            <img src="./../assets/purdue_logo.png" alt="Card Image" class="card-image" id="purdue"/>
-            <div class="card-text">
-                This is your caption or description.
-            </div>
-        </div>
-
-        <div class="team-card" >
-            <img src="./../assets/ohiostate_logo.png" alt="Card Image" class="card-image"/>
-            <div class="card-text">
-                This is your caption or description.
-            </div>
-        </div>
-
-        <div class="team-card" >
-            <img src="./../assets/oregon_logo.png" alt="Card Image" class="card-image" id="oregon"/>
-            <div class="card-text">
-                This is your caption or description.
-            </div>
-        </div>
-
-        <div class="team-card" >
-            <img src="./../assets/usc_logo.png" alt="Card Image" class="card-image"/>
-            <div class="card-text">
-                This is your caption or description.
-            </div>
-        </div>
-
-        <div class="team-card" >
-            <img src="./../assets/ucla_logo.png" alt="Card Image" class="card-image" id="ucla"/>
-            <div class="card-text">
-                This is your caption or description.
-            </div>
-        </div>
-
-        <div class="team-card" >
-            <img src="./../assets/washington_logo.png" alt="Card Image" class="card-image"/>
-            <div class="card-text">
-                This is your caption or description.
-            </div>
-        </div>
-
-        <div class="team-card" >
-            <img src="./../assets/wisconsin_logo.png" alt="Card Image" class="card-image" id="wisconsin"/>
-            <div class="card-text">
-                This is your caption or description.
-            </div>
-        </div>
-
-        <div class="team-card" >
-            <img src="./../assets/rutgers_logo.png" alt="Card Image" class="card-image" id="rutgers"/>
-            <div class="card-text">
-                This is your caption or description.
-            </div>
-        </div> -->
     </div>
 </template>
 
@@ -238,16 +117,12 @@ export default {
         }
     },
     methods: {
-        getLogoPath(filename) {
-            return new URL(`../assets/${filename}`, import.meta.url).href;
-        },
         async getTeams() {
             let url = 'http://localhost:4000/getTeams'
 
             axios.get(url)
             .then(res => {
                 this.teams = res.data
-                console.log(this.teams)
             })
             .catch(err => {
                 console.log(err)

@@ -17,7 +17,7 @@
         <div class="players-box">
             <div class="player-card" v-for="(player, index) in filteredPlayers" :key="index">
                 <div class="team-logo">
-                    <img :src="getLogoPath(player.logo_src)" alt="Card Image" />
+                    <img :src="`/assets/${player.logo_src}`" alt="Card Image" />
                 </div>
                 <div class="card-text">
                     {{ player.name }} | {{ player.team_abbrev}} <br />
@@ -201,24 +201,11 @@ export default {
         return {
             search: null,
             teams: [],
-            player: {
-                name: 'Kylan Boswell',
-                number: 4,
-                team: 'ILL',
-                hometown: 'Champaign-Urbana, IL',
-                position: 'G',
-                redshirt: true,
-                year: 3,
-                year_abbrev: 'JR'
-            },
             selected: '',
             players: []
         }
     },
     methods: {
-        getLogoPath(filename) {
-            return new URL(`../assets/${filename}`, import.meta.url).href;
-        },
         async getAllPlayers() {
             let url = 'http://localhost:4000/getPlayers'
 
@@ -254,12 +241,8 @@ export default {
     },
     watch: {
         selectedTeam: function (newValue) {
-            console.log(newValue)
             this.selected = newValue.name;
         },
-        selected: function (newValue) {
-            console.log(newValue)
-        }
     },
     computed: {
         filteredPlayers() {

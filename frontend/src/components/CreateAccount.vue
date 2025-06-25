@@ -71,9 +71,10 @@ export default {
                 })
             } else {
                 // Submit data
-                const baseURL = import.meta.env.DEV ? 'http://localhost:4000' : '';
+                // const baseURL = import.meta.env.DEV ? 'http://localhost:4000' : '';
+                let url = 'http://localhost:4000/createAccount'
                 try {
-                    const response = await axios.post(`${baseURL}/createAccount`, {
+                    const response = await axios.post(url, {
                         name: this.name,
                         email: this.email,
                         password: this.password
@@ -99,8 +100,6 @@ export default {
                         const modalInstance = bootstrap.Modal.getInstance(modalEl)
                                             || new bootstrap.Modal(modalEl)
                         modalInstance.hide()
-
-                        // document.getElementById('Login')?.focus()
                     } 
                 } catch (error) {
                     toast.error('Error creating account', {

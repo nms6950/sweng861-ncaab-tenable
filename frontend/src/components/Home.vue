@@ -60,7 +60,6 @@ export default {
         },
         initTeamPlayers(team) {
             this.activeTab = 'players'
-            console.log(team)
             this.selectedTeam = team
         }
     }

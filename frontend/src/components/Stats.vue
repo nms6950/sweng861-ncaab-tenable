@@ -138,14 +138,13 @@ export default {
     methods: {
         async getUserStats() {
             let url = 'http://localhost:4000/getUserStats'
-            if (this.user.id) {
+            if (this.user && this.user.id) {
                 axios.get(url, {
                     params: {
                         user_id: this.user.id
                     }
                 }).then((res) => {
                     const content = res.data[0];
-                    console.log(content);
                     this.games_played = content.games_played;
                     this.average_score = content.avg_score;
                 }).catch((err) => {
@@ -155,14 +154,13 @@ export default {
         },
         async getIndividualGames() {
             let url = 'http://localhost:4000/getIndividualGames'
-            if (this.user.id) {
+            if (this.user && this.user.id) {
                 axios.get(url, {
                     params: {
                         user_id: this.user.id
                     }
                 }).then((res) => {
                     const content = res.data;
-                    console.log(content);
                     this.num_wins = content.filter(game => game.num_correct == 10).length;
                     this.num_losses = content.filter(game => game.num_correct != 10 && game.num_correct != null).length;
                     this.games = content;

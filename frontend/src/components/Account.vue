@@ -154,11 +154,9 @@ export default {
             } else {
                 // Submit data
                 // Testing - localhost url
-                //let url = `http://localhost:4000/login`
-                const baseURL = import.meta.env.DEV ? 'http://localhost:4000' : '';
-                console.log(baseURL)
+                let url = `http://localhost:4000/login`
                 try {
-                    const response = await axios.post(`${baseURL}/login`, {
+                    const response = await axios.post(url, {
                         email: this.email,
                         password: this.password
                     })
@@ -170,7 +168,6 @@ export default {
                         })
                     } else {
                         this.$emit('login', response.data)
-                        console.log(response.data)
                     }
                 } catch (error) {
                     toast.error('Error logging in', {
