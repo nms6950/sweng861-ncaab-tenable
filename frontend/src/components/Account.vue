@@ -156,10 +156,9 @@ export default {
                 // Testing - localhost url
                 //let url = `http://localhost:4000/login`
 
-                const baseURL = import.meta.env.DEV ? 'http://localhost:4000' : '';
-                console.log(baseURL)
+                //const baseURL = import.meta.env.DEV ? 'http://localhost:4000' : '';
                 try {
-                    const response = await axios.post(`${baseURL}/login`, {
+                    const response = await axios.post(`/login`, {
                         email: this.email,
                         password: this.password
                     })

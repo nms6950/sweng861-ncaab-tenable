@@ -137,9 +137,9 @@ export default {
     },
     methods: {
         async getUserStats() {
-            let url = 'http://localhost:4000/getUserStats'
+            // let url = 'http://localhost:4000/getUserStats'
             if (this.user && this.user.id) {
-                axios.get(url, {
+                axios.get('/getUserStats', {
                     params: {
                         user_id: this.user.id
                     }
@@ -153,9 +153,9 @@ export default {
             }
         },
         async getIndividualGames() {
-            let url = 'http://localhost:4000/getIndividualGames'
+            // let url = 'http://localhost:4000/getIndividualGames'
             if (this.user && this.user.id) {
-                axios.get(url, {
+                axios.get('/getIndividualGames', {
                     params: {
                         user_id: this.user.id
                     }

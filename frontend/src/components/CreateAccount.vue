@@ -72,9 +72,9 @@ export default {
             } else {
                 // Submit data
                 // const baseURL = import.meta.env.DEV ? 'http://localhost:4000' : '';
-                let url = 'http://localhost:4000/createAccount'
+                // let url = 'http://localhost:4000/createAccount'
                 try {
-                    const response = await axios.post(url, {
+                    const response = await axios.post('/createAccount', {
                         name: this.name,
                         email: this.email,
                         password: this.password

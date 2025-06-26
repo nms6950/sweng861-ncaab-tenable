@@ -207,9 +207,9 @@ export default {
     },
     methods: {
         async getAllPlayers() {
-            let url = 'http://localhost:4000/getPlayers'
+            //let url = 'http://localhost:4000/getPlayers'
 
-            axios.get(url)
+            axios.get('/getPlayers')
             .then(res => {
                 this.players = res.data
             })
@@ -218,9 +218,9 @@ export default {
             })
         },
         async getTeams() {
-            let url = 'http://localhost:4000/getTeams'
+            //let url = 'http://localhost:4000/getTeams'
 
-            axios.get(url)
+            axios.get('/getTeams')
             .then(res => {
                 this.teams = res.data
             })

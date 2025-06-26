@@ -366,9 +366,9 @@ export default {
             this.gameEnded = true;
         },
         saveStats() {
-            const game_id = this.currentGame.id;
-            let url = 'http://localhost:4000/saveStats'
-            axios.post(url, {
+            //const game_id = this.currentGame.id;
+            //let url = 'http://localhost:4000/saveStats'
+            axios.post('/saveStats', {
                 num_correct: this.num_correct,
                 num_lives: this.numLives,
                 game_id: this.currentGame.id,
@@ -436,8 +436,8 @@ export default {
             }, 100);
         },
         async getPlayers() {
-            let url = 'http://localhost:4000/getPlayers'
-            await axios.get(url).then((res) => {
+            //let url = 'http://localhost:4000/getPlayers'
+            await axios.get('/getPlayers').then((res) => {
                 const content = res.data;
                 this.players = content;
             }).catch((err) => {
@@ -460,8 +460,8 @@ export default {
         },
         async getGame() {
             this.gameStarted = false;
-            let url = 'http://localhost:4000/getGame'
-            axios.get(url, {
+            //let url = 'http://localhost:4000/getGame'
+            axios.get('/getGame', {
                 params: {
                     date: this.date.toISOString().split('T')[0]
                 }
@@ -481,8 +481,8 @@ export default {
             })
         },
         async getMaxDate() {
-            let url = 'http://localhost:4000/getMaxDate'
-            await axios.get(url).then((res) => {
+            //let url = 'http://localhost:4000/getMaxDate'
+            await axios.get('/getMaxDate').then((res) => {
                 const content = res.data;
                 this.maxDate = new Date(content.max).toISOString().split('T')[0];
             }).catch((err) => {
