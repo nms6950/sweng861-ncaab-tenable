@@ -94,7 +94,8 @@ router.get('/getIndividualGames', async (req, res) => {
     const user_id = req.query.user_id;
     const query =  `SELECT G.game_date, S.num_correct
                     FROM ncaab.games G
-                    LEFT JOIN ncaab.stats S ON (S.game_id = G.id and S.user_id = $1)`
+                    LEFT JOIN ncaab.stats S ON (S.game_id = G.id and S.user_id = $1)
+                    ORDER BY G.game_date ASC`
 
     try {
         const result = await pool.query(query, [user_id]);

@@ -33,14 +33,14 @@
         </div>
         <div class="answers">
             <div class="answer" v-for="(check, index) in currentGame.checking" v-if="currentGame.id">
-                <div v-if="currentGame.checking[index]" class="checking">
+                <div v-if="currentGame.checking[index] && index == this.lastCheckingIndex" class="wrong">
+                    {{ this.checkingPlayer }}
+                </div>
+                <div v-else-if="currentGame.checking[index]" class="checking">
                     {{ this.checkingPlayer }}
                 </div>
                 <div v-else-if="currentGame.correct[index]" class="correct">
                     {{ currentGame.answers[index] }}
-                </div>
-                <div v-else-if="currentGame.checking[index] && index == this.lastCheckingIndex" class="wrong">
-                    {{ this.checkingPlayer }}
                 </div>
             </div>
             <div v-else>
