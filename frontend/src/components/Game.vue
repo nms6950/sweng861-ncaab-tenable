@@ -469,7 +469,7 @@ export default {
                 const content = res.data[0];
                 this.currentGame = {
                     prompt: content.prompt,
-                    answerSet: content.answerSet,
+                    answerSet: content.answerset,
                     answers: content.answers,
                     correct: [false, false, false, false, false, false, false, false, false, false],
                     checking: [false, false, false, false, false, false, false, false, false, false],
